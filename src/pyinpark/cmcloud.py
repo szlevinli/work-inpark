@@ -36,7 +36,7 @@ HOST = "msdms.cmsk1979.com"  # cspell: disable-line
 Endpoints = namedtuple("Endpoints", "login authenticate query")
 urls = Endpoints(*[f"https://{HOST}/{endpoint}/" for endpoint in Endpoints._fields])
 
-timeout = urllib3.util.Timeout(connect=2.0, read=7.0)
+timeout = urllib3.util.Timeout(connect=2.0, read=30.0)
 
 http = urllib3.PoolManager(timeout=timeout)
 
@@ -96,6 +96,9 @@ query_request_args = {
 get_query_headers = tz.compose(
     tz.assoc_in(query_request_args, ["headers"]), get_headers
 )
+
+# get_headers_immediately :: _ -> dict
+get_headers_immediately = tz.compose(get_query_headers, auth, login)
 
 
 # query_request :: dict -> str -> JSON
