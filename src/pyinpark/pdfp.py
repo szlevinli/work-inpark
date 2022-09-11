@@ -26,8 +26,8 @@ def create_df_from_file(file_path: Path) -> pd.DataFrame:
 
 
 @tz.curry
-def df_to_file(filename: Path, method: str):
-    return methodcaller(method, filename)
+def df_to_file(filename: Path, method: str, *args, **kwargs):
+    return methodcaller(method, filename, *args, **kwargs)
 
 
 @tz.curry
