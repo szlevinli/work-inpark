@@ -1,5 +1,5 @@
 import json
-from functools import partial,reduce
+from functools import partial, reduce
 from itertools import starmap
 from operator import attrgetter, contains, eq, methodcaller
 from pathlib import Path
