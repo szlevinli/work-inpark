@@ -3,7 +3,7 @@ from functools import partial, reduce
 from itertools import starmap
 from operator import attrgetter, contains, eq, methodcaller
 from pathlib import Path
-from typing import Callable, Iterable, List, Tuple, TypeVar
+from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar
 
 import toolz.curried as tz
 
@@ -161,3 +161,12 @@ def extract_key_from_filename(fn_ext: Callable[[str], str]) -> Callable[[Path], 
     >>> 'c'
     """
     return tz.compose(fn_ext, attrgetter("stem"))
+
+
+def over_all(lst: Sequence):
+    """over all sequence
+    
+    input ['a', 'b', 'c'], return [['a'], ['a', 'b'], ['a', 'b', 'c']]
+    """
+    return tz.pipe(lst, len, range, tz.map(lambda i: lst[: i + 1]),)
+
