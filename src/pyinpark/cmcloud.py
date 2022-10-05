@@ -4,6 +4,7 @@ import json
 from http import cookies
 from operator import methodcaller, attrgetter
 from collections import namedtuple
+from typing import Any, Callable, cast
 from pyinpark.pyfp import zip_, unpack_kwargs  # cspell: disable-line
 
 # output_cookies :: SimpleCookie -> str
@@ -98,7 +99,9 @@ get_query_headers = tz.compose(
 )
 
 # get_headers_immediately :: _ -> dict
-get_headers_immediately = tz.compose(get_query_headers, auth, login)
+get_headers_immediately = cast(
+    Callable[[], Any], tz.compose(get_query_headers, auth, login)
+)
 
 
 # query_request :: dict -> str -> JSON
