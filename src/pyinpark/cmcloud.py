@@ -82,8 +82,8 @@ auth = tz.compose(
 
 
 query_fields = {
-    "db_name": "yydbs",  # cspell: disable-line
-    "instance_name": "rents100.97.160.18",
+    "db_name": os.getenv("DB_NAME"),
+    "instance_name": os.getenv("INSTANCE_NAME"),
     "limit_num": 0,
     "schema_name": "",
     "sql_content": "select 1",
