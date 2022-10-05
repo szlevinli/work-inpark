@@ -1,11 +1,15 @@
 import urllib3
 import toolz.curried as tz
 import json
+import os
+from dotenv import load_dotenv
 from http import cookies
 from operator import methodcaller, attrgetter
 from collections import namedtuple
 from typing import Any, Callable, cast
 from pyinpark.pyfp import zip_, unpack_kwargs  # cspell: disable-line
+
+load_dotenv()
 
 # output_cookies :: SimpleCookie -> str
 output_cookies = tz.compose(
@@ -33,7 +37,7 @@ get_headers = tz.compose(
     tz.juxt([get_cookies_output, get_csrfToken]),
 )
 
-HOST = "msdms.cmsk1979.com"  # cspell: disable-line
+HOST = os.getenv("DOMAIN")
 Endpoints = namedtuple("Endpoints", "login authenticate query")
 urls = Endpoints(*[f"https://{HOST}/{endpoint}/" for endpoint in Endpoints._fields])
 
@@ -54,8 +58,8 @@ login = lambda: http.request("GET", urls.login)
 
 
 auth_fields = {
-    "username": "lihaiqiang",  # cspell: disable-line
-    "password": "Cmsk@2022lhq",  # cspell: disable-line
+    "username": os.getenv("USR"),  # cspell: disable-line
+    "password": os.getenv("PWD"),  # cspell: disable-line
 }
 
 auth_request_args = {
