@@ -7,7 +7,7 @@ from operator import attrgetter
 import arrow
 import toolz.curried as tz
 
-from ..pyinpark.utils import getLastDateByWeekday, Weekday
+from pyinpark.utils import getLastDateByWeekday, Weekday
 
 parser = argparse.ArgumentParser()
 
