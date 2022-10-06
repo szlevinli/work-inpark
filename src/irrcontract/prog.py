@@ -4,10 +4,10 @@
 import argparse
 from operator import attrgetter
 
-import arrow
 import toolz.curried as tz
+from pyinpark.utils import Weekday
 
-from pyinpark.utils import getLastDateByWeekday, Weekday
+from irrcontract._inter_utils_ import getDate, getPaths
 
 parser = argparse.ArgumentParser()
 
@@ -47,5 +47,14 @@ data_dir = tz.pipe(args, attrgetter(arg_data_name))
 out_dir = tz.pipe(args, attrgetter(arg_out_name))
 
 
-if __name__ == "__main__":
-    print(statistics_day, data_dir, out_dir)
+# get statistics date
+# ===================
+
+statDate, lastStatDate = tz.pipe(getDate(Weekday[statistics_day]), list, tz.get([1, 2]))
+
+# get statistics date
+# ===================
+
+paths = getPaths([data_dir, out_dir], statDate)
+
+print(paths)
