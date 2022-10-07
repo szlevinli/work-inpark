@@ -6,7 +6,7 @@ import arrow
 import toolz.curried as tz
 from pyinpark.utils import Weekday, getLastDateByWeekday
 
-from constants import DATE_FORMAT
+from irrcontract.constants import DATE_FORMAT
 
 
 def getDate(d: Weekday):
