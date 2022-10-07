@@ -47,12 +47,12 @@ data_dir = tz.pipe(args, attrgetter(arg_data_name))
 out_dir = tz.pipe(args, attrgetter(arg_out_name))
 
 
-# get statistics date
+# set statistics date
 # ===================
 
 statDate, lastStatDate = tz.pipe(getDate(Weekday[statistics_day]), list, tz.get([1, 2]))
 
-# get statistics date
+# set directories
 # ===================
 
 paths = getPaths([data_dir, out_dir], statDate)
