@@ -2,7 +2,7 @@ import urllib3
 import toolz.curried as tz
 import json
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from http import cookies
 from operator import methodcaller, attrgetter
 from collections import namedtuple
@@ -10,6 +10,7 @@ from typing import Any, Callable, cast
 from pyinpark.pyfp import zip_, unpack_kwargs  # cspell: disable-line
 
 load_dotenv()
+env_path = find_dotenv()
 
 # output_cookies :: SimpleCookie -> str
 output_cookies = tz.compose(
