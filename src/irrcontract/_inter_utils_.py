@@ -19,8 +19,7 @@ def getDate(d: Weekday):
     )
 
 
-def getPaths(paths: List[str], statDate: arrow.Arrow):
-    root = Path.cwd()
+def getPaths(root: Path, paths: List[str], statDate: arrow.Arrow):
     Paths = namedtuple("Paths", tz.cons("root", paths))
     return Paths._make(
         [
