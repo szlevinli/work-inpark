@@ -15,7 +15,7 @@ def auth(login_res):
         headers={"X-CSRFToken": login_res.cookies["csrftoken"],},
         cookies=login_res.cookies,
         # cspell: disable-next-line
-        data={"username": os.getenv("USR"), "password": os.getenv("PWD")},
+        data={"username": os.getenv("USR"), "password": os.getenv("PWD2")},
     )
 
 
