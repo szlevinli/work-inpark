@@ -239,3 +239,5 @@ cython_debug/
 .env
 config/
 sql/
+data/
+out/
