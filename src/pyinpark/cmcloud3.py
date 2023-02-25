@@ -1,3 +1,4 @@
+from operator import itemgetter, methodcaller
 import requests
 import toolz.curried as tz
 import os
@@ -53,3 +54,13 @@ def create_sql_executor_for_leaseRent(load_env_function):
         auth(auth_url, usr, pwd),
         query(query_url, db_name, instance_name),
     )
+
+
+def get_data_from_remote(executor, sql_file=None, sql="select 1"):
+    _sql = sql
+
+    if sql_file is not None:
+        with open(sql_file, "r") as f:
+            _sql = "".join([line for line in f])
+
+    return tz.pipe(_sql, executor, methodcaller("json"), itemgetter("data"))
