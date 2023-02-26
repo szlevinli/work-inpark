@@ -2,6 +2,8 @@ from operator import itemgetter, methodcaller
 import requests
 import toolz.curried as tz
 import os
+import pandas as pd
+from pathlib import Path
 
 
 def login(login_url):
@@ -64,3 +66,18 @@ def get_data_from_remote(executor, sql_file=None, sql="select 1"):
             _sql = "".join([line for line in f])
 
     return tz.pipe(_sql, executor, methodcaller("json"), itemgetter("data"))
+
+
+def create_df(data_file_path, sql_file, sql_executor, force_update=False):
+    file_path = Path(data_file_path)
+
+    if file_path.exists() and not force_update:
+        return pd.read_csv(file_path, low_memory=False)
+
+    data = get_data_from_remote(sql_executor, sql_file)
+
+    df = pd.DataFrame(data["rows"], columns=data["column_list"])
+
+    df.to_csv(file_path)
+
+    return df
