@@ -72,7 +72,7 @@ def create_df(data_file_path, sql_file, sql_executor, force_update=False):
     file_path = Path(data_file_path)
 
     if file_path.exists() and not force_update:
-        return pd.read_csv(file_path, low_memory=False)
+        return pd.read_csv(file_path, index_col=0, low_memory=False)
 
     data = get_data_from_remote(sql_executor, sql_file)
 
