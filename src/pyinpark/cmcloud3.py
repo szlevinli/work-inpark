@@ -14,7 +14,9 @@ def login(login_url):
 def auth(auth_url, usr, pwd, login_res):
     return requests.post(
         auth_url,
-        headers={"X-CSRFToken": login_res.cookies["csrftoken"],},
+        headers={
+            "X-CSRFToken": login_res.cookies["csrftoken"],
+        },
         cookies=login_res.cookies,
         # cspell: disable-next-line
         data={"username": usr, "password": pwd},
@@ -25,7 +27,9 @@ def auth(auth_url, usr, pwd, login_res):
 def query(query_url, db_name, instance_name, auth_res, sql):
     return requests.post(
         query_url,
-        headers={"X-CSRFToken": auth_res.cookies["csrftoken"],},
+        headers={
+            "X-CSRFToken": auth_res.cookies["csrftoken"],
+        },
         cookies=auth_res.cookies,
         data={
             "db_name": db_name,
@@ -76,7 +80,7 @@ def create_df(data_file_path, sql_file, sql_executor, force_update=False):
 
     data = get_data_from_remote(sql_executor, sql_file)
 
-    df = pd.DataFrame(data["rows"], columns=data["column_list"])
+    df = pd.DataFrame(data["rows"], columns=data["column_list"])  # type: ignore
 
     df.to_csv(file_path)
 
