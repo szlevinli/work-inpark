@@ -12,7 +12,7 @@ class RemoteDataMustContainFields(TypedDict):
 RemoteData = Union[RemoteDataMustContainFields, Dict[str, Any]]
 
 
-class DbArgs(NamedTuple):
+class DBArgs(NamedTuple):
     DOMAIN: str
     LOGIN_URL: str
     AUTH_URL: str
@@ -26,7 +26,7 @@ class DbArgs(NamedTuple):
 
 
 class DBClient:
-    def __init__(self, db_args: DbArgs) -> None:
+    def __init__(self, db_args: DBArgs) -> None:
         self.args = db_args
         self.session = requests.Session()
         # login
