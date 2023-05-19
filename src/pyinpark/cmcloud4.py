@@ -1,5 +1,4 @@
 import requests
-import os
 import pandas as pd
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, TypedDict, Any, Union
@@ -14,34 +13,16 @@ RemoteData = Union[RemoteDataMustContainFields, Dict[str, Any]]
 
 
 class DbArgs(NamedTuple):
-    login_url: str = ""
-    auth_url: str = ""
-    desc_url: str = ""
-    dict_url: str = ""
-    usr: str = ""
-    pwd: str = ""
-    query_url: str = ""
-    db_name: str = ""
-    instance_name: str = ""
-
-
-def getEnv(k: str) -> str:
-    v = os.getenv(k)
-    return v if v is not None else ""
-
-
-def load_args_from_env() -> DbArgs:
-    return DbArgs(
-        login_url=getEnv("LOGIN_URL"),
-        auth_url=getEnv("AUTH_URL"),
-        desc_url=getEnv("DESC_URL"),
-        dict_url=getEnv("DICT_URL"),
-        usr=getEnv("USR"),
-        pwd=getEnv("PWD2"),
-        query_url=getEnv("QUERY_URL"),
-        db_name=getEnv("DB_NAME"),
-        instance_name=getEnv("INSTANCE_NAME"),
-    )
+    DOMAIN: str
+    LOGIN_URL: str
+    AUTH_URL: str
+    QUERY_URL: str
+    DESC_URL: str
+    DICT_URL: str
+    USR: str
+    PWD2: str
+    DB_NAME: str
+    INSTANCE_NAME: str
 
 
 class DBClient:
@@ -49,21 +30,21 @@ class DBClient:
         self.args = db_args
         self.session = requests.Session()
         # login
-        self.session.get(self.args.login_url)
+        self.session.get(self.args.LOGIN_URL)
         # auth
         self.session.post(
-            self.args.auth_url,
+            self.args.AUTH_URL,
             headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
-            data={"username": self.args.usr, "password": self.args.pwd},
+            data={"username": self.args.USR, "password": self.args.PWD2},
         )
 
     def query(self, sql: str) -> RemoteData:
         return self.session.post(
-            self.args.query_url,
+            self.args.QUERY_URL,
             headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
             data={
-                "db_name": self.args.db_name,
-                "instance_name": self.args.instance_name,
+                "db_name": self.args.DB_NAME,
+                "instance_name": self.args.INSTANCE_NAME,
                 "limit_num": 0,
                 "schema_name": "",
                 "sql_content": sql,
@@ -73,11 +54,11 @@ class DBClient:
 
     def describe_table(self, db_name: str, tb_name: str) -> requests.Response:
         return self.session.post(
-            self.args.desc_url,
+            self.args.DESC_URL,
             headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
             data={
                 "db_name": db_name,
-                "instance_name": self.args.instance_name,
+                "instance_name": self.args.INSTANCE_NAME,
                 "schema_name": "",
                 "tb_name": tb_name,
             },
@@ -85,11 +66,11 @@ class DBClient:
 
     def data_dictionary(self, db_name: str, tb_name: str) -> RemoteData:
         return self.session.get(
-            self.args.dict_url,
+            self.args.DICT_URL,
             headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
             params={
                 "db_name": db_name,
-                "instance_name": self.args.instance_name,
+                "instance_name": self.args.INSTANCE_NAME,
                 "tb_name": tb_name,
             },
         ).json()["data"]["desc"]
