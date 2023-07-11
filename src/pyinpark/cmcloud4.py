@@ -81,13 +81,13 @@ class DBClient:
 
     def get_select_result(
         self,
-        cache_file: str,
+        cache_file: Optional[str] = None,
         sql_file: Optional[str] = None,
         sql: Optional[str] = None,
     ) -> pd.DataFrame:
-        cache_file_path = Path(cache_file)
+        cache_file_path = Path(cache_file) if cache_file is not None else None
 
-        if cache_file_path.exists():
+        if cache_file_path is not None and cache_file_path.exists():
             return pd.read_csv(cache_file_path, index_col=0, low_memory=False)
 
         sql_ = "select 1"
@@ -102,6 +102,7 @@ class DBClient:
 
         df = pd.DataFrame(data["rows"], columns=data["column_list"])
 
-        df.to_csv(cache_file_path)
+        if cache_file_path is not None:
+            df.to_csv(cache_file_path)
 
         return df
