@@ -38,6 +38,20 @@ class DBClient:
             data={"username": self.args.USR, "password": self.args.PWD2},
         )
 
+    def query_raw(self, sql: str) -> requests.Response:
+        return self.session.post(
+            self.args.QUERY_URL,
+            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
+            data={
+                "db_name": self.args.DB_NAME,
+                "instance_name": self.args.INSTANCE_NAME,
+                "limit_num": 0,
+                "schema_name": "",
+                "sql_content": sql,
+                "tb_name": "",
+            },
+        )
+
     def query(self, sql: str) -> RemoteData:
         return self.session.post(
             self.args.QUERY_URL,
