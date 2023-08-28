@@ -95,8 +95,8 @@ class DBClient:
 
     def get_select_result(
         self,
-        cache_file: Optional[str] = None,
-        sql_file: Optional[str] = None,
+        cache_file: Optional[str | Path] = None,
+        sql_file: Optional[str | Path] = None,
         sql: Optional[str] = None,
     ) -> pd.DataFrame:
         cache_file_path = Path(cache_file) if cache_file is not None else None
