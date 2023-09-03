@@ -28,20 +28,31 @@ class DBArgs(NamedTuple):
 class DBClient:
     def __init__(self, db_args: DBArgs) -> None:
         self.args = db_args
-        self.session = requests.Session()
-        # login
-        self.session.get(self.args.LOGIN_URL)
-        # auth
-        self.session.post(
-            self.args.AUTH_URL,
-            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
-            data={"username": self.args.USR, "password": self.args.PWD2},
-        )
+        self._session: Optional[requests.Session] = None
+
+    def get_session(self) -> requests.Session:
+        if self._session is None:
+            session = requests.Session()
+
+            # login
+            session.get(self.args.LOGIN_URL)
+
+            # auth
+            session.post(
+                self.args.AUTH_URL,
+                headers={"X-CSRFToken": session.cookies["csrftoken"]},
+                data={"username": self.args.USR, "password": self.args.PWD2},
+            )
+
+            self._session = session
+
+        return self._session
 
     def query_raw(self, sql: str) -> requests.Response:
-        return self.session.post(
+        session = self.get_session()
+        return session.post(
             self.args.QUERY_URL,
-            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
+            headers={"X-CSRFToken": session.cookies["csrftoken"]},
             data={
                 "db_name": self.args.DB_NAME,
                 "instance_name": self.args.INSTANCE_NAME,
@@ -53,9 +64,10 @@ class DBClient:
         )
 
     def query(self, sql: str) -> RemoteData:
-        return self.session.post(
+        session = self.get_session()
+        return session.post(
             self.args.QUERY_URL,
-            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
+            headers={"X-CSRFToken": session.cookies["csrftoken"]},
             data={
                 "db_name": self.args.DB_NAME,
                 "instance_name": self.args.INSTANCE_NAME,
@@ -67,9 +79,10 @@ class DBClient:
         ).json()["data"]
 
     def describe_table(self, db_name: str, tb_name: str) -> requests.Response:
-        return self.session.post(
+        session = self.get_session()
+        return session.post(
             self.args.DESC_URL,
-            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
+            headers={"X-CSRFToken": session.cookies["csrftoken"]},
             data={
                 "db_name": db_name,
                 "instance_name": self.args.INSTANCE_NAME,
@@ -79,9 +92,10 @@ class DBClient:
         )
 
     def data_dictionary(self, db_name: str, tb_name: str) -> RemoteData:
-        return self.session.get(
+        session = self.get_session()
+        return session.get(
             self.args.DICT_URL,
-            headers={"X-CSRFToken": self.session.cookies["csrftoken"]},
+            headers={"X-CSRFToken": session.cookies["csrftoken"]},
             params={
                 "db_name": db_name,
                 "instance_name": self.args.INSTANCE_NAME,
